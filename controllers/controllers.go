@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pranjalch99/ecommerce-golang/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func HashPassword(password string) string {
@@ -52,6 +53,7 @@ func Signup() gin.HandlerFunc {
 		}
 
 		phoneCount, err := UserCollection.CountDocuments(ctx, bson.M{"phone": user.Phone})
+		defer cancel() //do you really need this extra defer statement?
 		if err != nil {
 			log.Panic(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -66,6 +68,25 @@ func Signup() gin.HandlerFunc {
 		password := HashPassword(*user.Password)
 		user.Password = &password
 
+		user.Created_At, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		user.Updated_At, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		user.ID = primitive.NewObjectID()
+		token, refreshtoken, _ := generate.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, user.User_ID)
+		user.Token = &token
+		user.Refresh_Token = &refreshtoken
+		user.UserCart = make([]models.ProductUser, 0)
+		user.Address_Details = make([]models.Address, 0)
+		user.Order_Details = make([]models.Order, 0)
+
+		_, inserterr := UserCollection.InsertOne(ctx, user)
+		if inserterr != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "the user did not get created"})
+			return
+		}
+
+		defer cancel() //do you really need this extra defer statement?
+
+		c.JSON(http.StatusCreated, "Successfully signed in the user!")
 	}
 
 }
