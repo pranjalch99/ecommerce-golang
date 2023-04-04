@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -28,15 +29,15 @@ func Signup() gin.HandlerFunc {
 
 		var user models.User
 
-		bindingErr := c.BindJSON(&user)
-		if bindingErr != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": bindingErr.Error()}) //check here if you actually need .Error()
+		err := c.BindJSON(&user)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err})
 			return
 		}
 
-		validationErr := Validate.Struct(user)
-		if validationErr != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": validationErr})
+		err = Validate.Struct(user)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err})
 			return
 		}
 
@@ -78,8 +79,8 @@ func Signup() gin.HandlerFunc {
 		user.Address_Details = make([]models.Address, 0)
 		user.Order_Details = make([]models.Order, 0)
 
-		_, inserterr := UserCollection.InsertOne(ctx, user)
-		if inserterr != nil {
+		_, err = UserCollection.InsertOne(ctx, user)
+		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "the user did not get created"})
 			return
 		}
@@ -92,6 +93,43 @@ func Signup() gin.HandlerFunc {
 }
 
 func Login() gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+
+		var user models.User
+
+		err := c.BindJSON(&user)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			return
+		}
+
+		err = UserCollection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&foundUser)
+		defer cancel() //do you need this?
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "login or password incorrect"}) //can you change the error message
+			return
+		}
+
+		PasswordIsValid, msg := VerifyPassword(*user.Password, *foundUser.Password)
+		defer cancel()
+
+		if !PasswordIsValid {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+			fmt.Println(msg)
+			return
+		}
+
+		token, refreshToken, _ := generate.TokenGenerator(*foundUser.Email, *foundUser.First_Name, *foundUser.Last_Name, *foundUser.User_ID)
+		defer cancel()
+
+		generate.UpdateAllTokens(token, refreshToken, foundUser.User_ID)
+
+		c.JSON(http.StatusFound, foundUser)
+	}
 
 }
 
