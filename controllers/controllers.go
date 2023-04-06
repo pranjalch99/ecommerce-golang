@@ -8,17 +8,41 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"github.com/pranjalch99/ecommerce-golang/database"
 	"github.com/pranjalch99/ecommerce-golang/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/crypto/bcrypt"
 )
+
+var UserCollection *mongo.Collection = database.UserData(database.Client, "Users")
+var ProductCollection *mongo.Collection = database.ProductData(database.Client, "Products")
+var Validate = validator.New()
 
 func HashPassword(password string) string {
 
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return string(bytes)
 }
 
 func VerifyPassword(userPassword string, givenPassword string) (bool, string) {
 
+	msg := ""
+	valid := true
+
+	err := bcrypt.CompareHashAndPassword([]byte(givenPassword), []byte(userPassword))
+	if err != nil {
+		msg = "Login or password is incorrect"
+		valid = false
+	}
+
+	return valid, msg
 }
 
 func Signup() gin.HandlerFunc {
@@ -138,6 +162,42 @@ func ProductViewerAdmin() gin.HandlerFunc {
 }
 
 func SearchProduct() gin.HandlerFunc {
+
+	//This fuction is essentially returning all the products from our database to the frontend, thats about it!
+
+	return func(c *gin.Context) {
+
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+
+		var productlist []models.Product
+
+		cursor, err := ProductCollection.Find(ctx, bson.D{{}}) //passing {} to get all the products from the database
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, "something went wrong, please try after sometime")
+			return
+		}
+
+		err = cursor.All(ctx, &productlist)
+		if err != nil {
+			log.Println(err)
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+
+		defer cursor.Close(ctx)
+
+		err = cursor.Err()
+		if err != nil {
+			log.Println(err)
+			c.IndentedJSON(400, "invalid")
+			return
+		}
+
+		defer cancel()
+		c.IndentedJSON(200, productlist)
+
+	}
 
 }
 
