@@ -21,10 +21,10 @@ func AddAddress() gin.HandlerFunc {
 			c.Header("Content-Type", "application/json")
 			c.JSON(http.StatusNotFound, gin.H{"error": "invalid query"})
 			c.Abort()
-			return 
+			return
 		}
 
-		address, err := ObjectIDFromHex(user_id)
+		address, err := primitive.ObjectIDFromHex(user_id)
 		if err != nil {
 			c.IndentedJSON(500, "Internal Server Error")
 		}
@@ -37,7 +37,7 @@ func AddAddress() gin.HandlerFunc {
 			c.IndentedJSON(http.StatusNotAcceptable, err.Error())
 		}
 
-		ctx, cancel := context.WithTimeout(contect.Background, 100*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 		defer cancel()
 
 		//there will be multiple addresses associated with a user id
@@ -62,7 +62,7 @@ func AddAddress() gin.HandlerFunc {
 
 		for _, addressNumber := range addressInfo {
 			count := addressNumber["count"]
-			size = count(int32)
+			size = count.(int32)
 		}
 
 		if size < 2 {
@@ -72,7 +72,7 @@ func AddAddress() gin.HandlerFunc {
 			if err != nil {
 				log.Println(err)
 			}
-			
+
 		} else {
 			c.IndentedJSON(400, "Not Allowed")
 		}
@@ -83,6 +83,8 @@ func AddAddress() gin.HandlerFunc {
 	}
 }
 
+func ObjectIDFromHex(user_id string) {
+	panic("unimplemented")
 }
 
 func EditHomeAddress() gin.HandlerFunc {
