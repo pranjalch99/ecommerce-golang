@@ -89,9 +89,88 @@ func ObjectIDFromHex(user_id string) {
 
 func EditHomeAddress() gin.HandlerFunc {
 
+	return func(c *gin.Context) {
+
+		user_id := c.Query("id")
+		if user_id == "" {
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusNotFound, gin.H{"error": "Invalid"})
+			c.Abort()
+			return
+		}
+
+		userId, err := primitive.ObjectIDFromHex(user_id)
+		if err != nil {
+			c.IndentedJSON(500, "Internal Server Error")
+		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+
+		var editAddress models.Address
+
+		err = c.BindJSON(&editAddress)
+		if err != nil {
+			c.IndentedJSON(http.StatusBadRequest, err.Error())
+		}
+
+		filter := bson.D{primitive.E{Key: "_id", Value: userId}}
+		update := bson.D{{Key: "$set", Value: bson.D{primitive.E{Key: "address.0.house", Value: editAddress.House}, {Key: "address.0.street", Value: editAddress.Street}, {Key: "address.0.city", Value: editAddress.City}, {Key: "address.0.pincode", Value: editAddress.Pincode}}}}
+
+		_, err = UserCollection.UpdateOne(ctx, filter, update)
+		if err != nil {
+			c.IndentedJSON(500, "Something went wrong")
+			return
+		}
+
+		defer cancel()
+		ctx.Done()
+		c.IndentedJSON(200, "Successfully updated the home address")
+	}
+
 }
 
 func EditWorkAddress() gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+
+		user_id := c.Query("id")
+		if user_id == "" {
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusNotFound, gin.H{"error": "Invalid"})
+			c.Abort()
+			return
+		}
+
+		userId, err := primitive.ObjectIDFromHex(user_id)
+		if err != nil {
+			c.IndentedJSON(500, "Internal Server Error")
+		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+
+		var editAddress models.Address
+
+		//data that is coming into the JSON through context is binded into the struct below
+		err = c.BindJSON(&editAddress)
+		if err != nil {
+			c.IndentedJSON(http.StatusBadRequest, err.Error())
+		}
+
+		filter := bson.D{primitive.E{Key: "_id", Value: userId}}
+		update := bson.D{{Key: "$set", Value: bson.D{primitive.E{Key: "address.1.house", Value: editAddress.House}, {Key: "address.1.street", Value: editAddress.Street}, {Key: "address.1.city", Value: editAddress.City}, {Key: "address.1.pincode", Value: editAddress.Pincode}}}}
+
+		_, err = UserCollection.UpdateOne(ctx, filter, update)
+		if err != nil {
+			c.IndentedJSON(500, "Something went wrong")
+			return
+		}
+
+		defer cancel()
+		ctx.Done()
+		c.IndentedJSON(200, "Successfully updated the work address")
+	}
 
 }
 
