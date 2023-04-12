@@ -7,6 +7,7 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/pranjalch99/ecommerce-golang/database"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -54,10 +55,37 @@ func TokenGenerator(email string, firstName string, lastName string, uid string)
 	return token, refreshToken, err
 }
 
-func ValidateToken() {
+func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
 
+	token, err := jwt.ParseWithClaims(signedToken, &SignedDetails{}, func(token *jwt.Token)(interface{}, error){
+		return []byte(SECRET_KEY), nil 
+	})
+
+	if err != nil {
+		msg = err.Error()
+		return 
+	}
+
+	claims, ok := token.Claims.(*SignedDetails)
+	if !ok {
+		msg = "the token is invalid"
+		return 
+	}
+
+	claims.ExpiresAt < time.Now().Unix() {
+		msg = "token is already expired"
+		return 
+	}
+
+	return claims, msg 
 }
 
-func UpdateAllTokens() {
+func UpdateAllTokens(singnedToken string, signedRefreshToken string, userId string) {
 
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+
+	var updatedObj primitive.D
+
+	updatedObj = append(updatedObj, bson.E{Key: "token", Value: signedToken})
 }
