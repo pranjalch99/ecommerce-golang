@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"time"
 
 	"github.com/pranjalch99/ecommerce-golang/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -75,7 +76,26 @@ func RemoveCartItem(ctx context.Context, prodCollection, userCollection *mongo.C
 
 }
 
-func BuyItemFromCart() {
+func BuyItemFromCart(ctx context.Context, userCollection *mongo.Collection, userId string) error {
+
+	//fetch the cart of the user
+	//find the cart total
+	//create an order with these items
+	//empty up the cart
+
+	id, err := primitive.ObjectIDFromHex(userId)
+	if err != nil {
+		log.Println(err)
+		return ErrUserIdInvalid
+	}
+
+	var getCartItems models.User
+	var orderCart models.Order
+
+	orderCart.Order_ID = primitive.NewObjectID()
+	orderCart.Ordered_At = time.Now()
+	orderCart.Payment_Method.COD = true
+	orderCart.Order_Cart = make([]models.ProductUser, 0)
 
 }
 
