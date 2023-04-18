@@ -81,6 +81,8 @@ func BuyItemFromCart(ctx context.Context, userCollection *mongo.Collection, user
 	//fetch the cart of the user
 	//find the cart total
 	//create an order with these items
+	//added order to the user collection
+	//added items in the cart to order list
 	//empty up the cart
 
 	id, err := primitive.ObjectIDFromHex(userId)
@@ -135,6 +137,26 @@ func BuyItemFromCart(ctx context.Context, userCollection *mongo.Collection, user
 	if err != nil {
 		log.Println(err)
 	}
+
+	filter2 := bson.D{primitive.E{Key: "_id", Value: id}}
+	update2 := bson.M{"$push": bson.M{"orders.$[].orderList": bson.M{"each": getCartItems.UserCart}}}
+
+	_, err = userCollection.UpdateOne(ctx, filter2, update2)
+	if err != nil {
+		log.Println(err)
+	}
+
+	userCartEmpty := make([]models.ProductUser, 0)
+
+	filter3 := bson.D{primitive.E{Key: "_id", Value: "id"}}
+	update3 := bson.D{{Key: "$set", Value: bson.D{primitive.E{Key: "userCart", Value: userCartEmpty}}}}
+
+	_, err = userCollection.UpdateOne(ctx, filter3, update3)
+	if err != nil {
+		return ErrCantBuyCartItem
+	}
+
+	return nil
 
 }
 
