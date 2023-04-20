@@ -11,6 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/pranjalch99/ecommerce-golang/database"
 	"github.com/pranjalch99/ecommerce-golang/models"
+	generate "github.com/pranjalch99/ecommerce-golang/tokens"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -96,7 +97,7 @@ func Signup() gin.HandlerFunc {
 		user.Created_At, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		user.Updated_At, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		user.ID = primitive.NewObjectID()
-		token, refreshtoken, _ := generate.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, user.User_ID)
+		token, refreshtoken, _ := generate.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, *user.User_ID)
 		user.Token = &token
 		user.Refresh_Token = &refreshtoken
 		user.UserCart = make([]models.ProductUser, 0)
@@ -123,6 +124,7 @@ func Login() gin.HandlerFunc {
 		defer cancel()
 
 		var user models.User
+		var foundUser models.User
 
 		err := c.BindJSON(&user)
 		if err != nil {
@@ -150,7 +152,7 @@ func Login() gin.HandlerFunc {
 		token, refreshToken, _ := generate.TokenGenerator(*foundUser.Email, *foundUser.First_Name, *foundUser.Last_Name, *foundUser.User_ID)
 		defer cancel()
 
-		generate.UpdateAllTokens(token, refreshToken, foundUser.User_ID)
+		generate.UpdateAllTokens(token, refreshToken, *foundUser.User_ID)
 
 		c.JSON(http.StatusFound, foundUser)
 	}

@@ -219,7 +219,7 @@ func (app *Application) InstantBuy() gin.HandlerFunc {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
-		err := database.InstanBuyer(ctx, app.productCollection, app.userCollection, productId, userQueryId)
+		err = database.InstantBuyer(ctx, app.productCollection, app.userCollection, productId, userQueryId)
 		if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, err)
 			return
