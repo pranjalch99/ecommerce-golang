@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pranjalch99/ecommerce-golang/controllers"
 	"github.com/pranjalch99/ecommerce-golang/database"
-	"github.com/pranjalch99/ecommerce-golang/middlewares"
+	"github.com/pranjalch99/ecommerce-golang/middleware"
 	"github.com/pranjalch99/ecommerce-golang/routes"
 )
 
@@ -29,7 +29,7 @@ func main() {
 	router.Use(gin.Recovery())
 
 	routes.UserRoutes(router)
-	router.Use(middlewares.Authentication())
+	router.Use(middleware.Authentication())
 
 	router.GET("/addtocart", app.AddToCart())
 	router.GET("/removeitem", app.RemoveItem())

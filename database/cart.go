@@ -160,7 +160,7 @@ func BuyItemFromCart(ctx context.Context, userCollection *mongo.Collection, user
 
 }
 
-func InstanBuyer(ctx context.Context, prodCollection, userCollection *mongo.Collection, productId primitive.ObjectID, userId string) error {
+func InstantBuyer(ctx context.Context, prodCollection, userCollection *mongo.Collection, productId primitive.ObjectID, userId string) error {
 
 	id, err := primitive.ObjectIDFromHex(userId)
 	if err != nil {
