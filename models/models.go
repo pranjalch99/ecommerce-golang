@@ -7,56 +7,56 @@ import (
 )
 
 type User struct {
-	ID              primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	First_Name      *string            `json:"firstName,omitempty" bson:"firstName,omitempty" validate:"required,min=2,max=30"`
-	Last_Name       *string            `json:"lastName,omitempty" bson:"lastName,omitempty" validate:"required,min=2,max=30"`
-	Password        *string            `json:"password,omitempty" bson:"password,omitempty" validate:"required,min=6"`
-	Email           *string            `json:"email,omitempty" bson:"email,omitempty" validate:"email,required"`
-	Phone           *string            `json:"phone,omitempty" bson:"phone,omitempty" validate:"required"`
-	Token           *string            `json:"token,omitempty" bson:"token,omitempty"`
-	Refresh_Token   *string            `json:"refreshToken,omitempty" bson:"refreshToken,omitempty"`
-	Created_At      time.Time          `json:"createdAt,omitempty" bson:"createdAt,omitempty"`
-	Updated_At      time.Time          `json:"updatedAt,omitempty" bson:"updatedAt,omitempty"`
-	User_ID         *string            `json:"userId,omitempty" bson:"userId,omitempty"`
-	UserCart        []ProductUser      `json:"userCart,omitempty" bson:"userCart,omitempty"`
-	Address_Details []Address          `json:"address,omitempty" bson:"address,omitempty"`
-	Order_Details   []Order            `json:"orders,omitempty" bson:"orders,omitempty"`
+	ID              primitive.ObjectID `json:"_id" bson:"_id"`
+	First_Name      *string            `json:"first_name" validate:"required,min=2,max=30"`
+	Last_Name       *string            `json:"last_name"  validate:"required,min=2,max=30"`
+	Password        *string            `json:"password"   validate:"required,min=6"`
+	Email           *string            `json:"email"      validate:"email,required"`
+	Phone           *string            `json:"phone"      validate:"required"`
+	Token           *string            `json:"token"`
+	Refresh_Token   *string            `josn:"refresh_token"`
+	Created_At      time.Time          `json:"created_at"`
+	Updated_At      time.Time          `json:"updtaed_at"`
+	User_ID         string             `json:"user_id"`
+	UserCart        []ProductUser      `json:"usercart" bson:"usercart"`
+	Address_Details []Address          `json:"address" bson:"address"`
+	Order_Status    []Order            `json:"orders" bson:"orders"`
 }
 
 type Product struct {
-	Product_ID   primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Product_Name *string            `json:"productName,omitempty" bson:"productName,omitempty"`
-	Price        *uint64            `json:"price,omitempty" bson:"price,omitempty"`
-	Rating       *uint8             `json:"rating,omitempty" bson:"rating,omitempty"`
-	Image        *string            `json:"image,omitempty" bson:"image,omitempty"`
+	Product_ID   primitive.ObjectID `bson:"_id"`
+	Product_Name *string            `json:"product_name"`
+	Price        *uint64            `json:"price"`
+	Rating       *uint8             `json:"rating"`
+	Image        *string            `json:"image"`
 }
 
 type ProductUser struct {
-	Product_ID   primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Product_Name *string            `json:"productName,omitempty" bson:"productName,omitempty"`
-	Price        int                `json:"price,omitempty" bson:"price,omitempty"`
-	Rating       *uint              `json:"rating,omitempty" bson:"rating,omitempty"`
-	Image        *string            `json:"image,omitempty" bson:"image,omitempty"`
+	Product_ID   primitive.ObjectID `bson:"_id"`
+	Product_Name *string            `json:"product_name" bson:"product_name"`
+	Price        int                `json:"price"  bson:"price"`
+	Rating       *uint              `json:"rating" bson:"rating"`
+	Image        *string            `json:"image"  bson:"image"`
 }
 
 type Address struct {
-	Address_ID primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	House      *string            `json:"house,omitempty" bson:"house,omitempty"`
-	Street     *string            `json:"street,omitempty" bson:"street,omitempty"`
-	City       *string            `json:"city,omitempty" bson:"city,omitempty"`
-	Pincode    *string            `json:"pincode,omitempty" bson:"pincode,omitempty"`
+	Address_id primitive.ObjectID `bson:"_id"`
+	House      *string            `json:"house_name" bson:"house_name"`
+	Street     *string            `json:"street_name" bson:"street_name"`
+	City       *string            `json:"city_name" bson:"city_name"`
+	Pincode    *string            `json:"pin_code" bson:"pin_code"`
 }
 
 type Order struct {
-	Order_ID       primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Order_Cart     []ProductUser      `json:"orderCart,omitempty" bson:"orderCart,omitempty"`
-	Ordered_At     time.Time          `json:"orderedAt,omitempty" bson:"orderedAt,omitempty"`
-	Price          int                `json:"price,omitempty" bson:"price,omitempty"`
-	Discount       *int               `json:"discount,omitempty" bson:"discount,omitempty"`
-	Payment_Method Payment            `json:"paymentMethod,omitempty" bson:"paymentMethod,omitempty"`
+	Order_ID       primitive.ObjectID `bson:"_id"`
+	Order_Cart     []ProductUser      `json:"order_list"  bson:"order_list"`
+	Orderered_At   time.Time          `json:"ordered_on"  bson:"ordered_on"`
+	Price          int                `json:"total_price" bson:"total_price"`
+	Discount       *int               `json:"discount"    bson:"discount"`
+	Payment_Method Payment            `json:"payment_method" bson:"payment_method"`
 }
 
 type Payment struct {
-	Digital bool `json:"digital,omitempty" bson:"digital,omitempty"`
-	COD     bool `json:"cod,omitempty" bson:"cod,omitempty"`
+	Digital bool `json:"digital" bson:"digital"`
+	COD     bool `json:"cod"     bson:"cod"`
 }
