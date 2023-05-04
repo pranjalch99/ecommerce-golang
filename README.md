@@ -13,11 +13,11 @@ http://localhost:8000/users/signup
 
 ```json
 {
-  "first_name": "Akhil",
-  "last_name": "Sharma",
-  "email": "akhil@gmail.com",
-  "password": "akhilsharma",
-  "phone": "+4534545435"
+  "first_name": "Pranjal",
+  "last_name": "Choubey",
+  "email": "pranjalch99@gmail.com",
+  "password": "pranjalchoubey",
+  "phone": "+919131786237"
 }
 ```
 
@@ -29,8 +29,8 @@ Response :"Successfully Signed Up!!"
 
 ```json
 {
-  "email": "akhil@gmail.com",
-  "password": "akhilsharma"
+  "email": "pranjalch99@gmail.com",
+  "password": "pranjalchoubey"
 }
 ```
 
@@ -38,17 +38,17 @@ response will be like this
 
 ```json
 {
-  "_id": "***********************",
-  "first_name": "akhil",
-  "last_name": "sharma",
-  "password": "$2a$14$UIYjkTfnFnhg4qhIfhtYnuK9qsBQifPKgu/WPZAYBaaN17j0eTQZa",
-  "email": "akhil@gmail.com",
-  "phone": "+4534545435",
-  "token": "eyJc0Bwcm90b25vbWFpbC5jb20iLCJGaXJzdF9OYW1lIjoiam9zZXBoIiwiTGFzdF9OYW1lIjoiaGVybWlzIiwiVWlkIjoiNjE2MTRmNTM5ZjI5YmU5NDJiZDlkZjhlIiwiZXhwIjoxNjMzODUzNjUxfQ.NbcpVtPLJJqRF44OLwoanynoejsjdJb5_v2qB41SmB8",
-  "Refresh_Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6IiIsIkZpcnLCJVaWQiOiIiLCJleHAiOjE2MzQzNzIwNTF9.ocpU8-0gCJsejmCeeEiL8DXhFcZsW7Z3OCN34HgIf2c",
-  "created_at": "2022-04-09T08:14:11Z",
-  "updtaed_at": "2022-04-09T08:14:11Z",
-  "user_id": "61614f539f29be942bd9df8e",
+  "_id": "6449127caea6c0531891c962",
+  "first_name": "Pranjal",
+  "last_name": "Choubey",
+  "password": "$2a$14$M4USoLbDVrvpGhZ0SQTgGuD0sRJnPwh4PRCUzlmOzVtKEbTtqpRbq",
+  "email": "pranjalch99@gmail.com",
+  "phone": "+919131786237",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6InByYW5qYWxjaDk5QGdtYWlsLmNvbSIsIkZpcnN0X05hbWUiOiJQcmFuamFsIiwiTGFzdF9OYW1lIjoiQ2hvdWJleSIsIlVpZCI6IjY0NDkxMjdjYWVhNmMwNTMxODkxYzk2MiIsImV4cCI6MTY4MzI2Mzk3OH0.uBytaqhodj0uDJRKBEnISQPGYKy6yEmx2IAolZLNr8E",
+  "Refresh_Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6IiIsIkZpcnN0X05hbWUiOiIiLCJMYXN0X05hbWUiOiIiLCJVaWQiOiIiLCJleHAiOjE2ODM3ODIzNzh9.EL9MEbC9dxzjCnayIRhrMqUQxJw0dnO-_5GDp63GdqA",
+  "created_at": "2023-04-26T12:01:00Z",
+  "updtaed_at": "2023-04-26T12:01:00Z",
+  "user_id": "6449127caea6c0531891c962",
   "usercart": [],
   "address": [],
   "orders": []
